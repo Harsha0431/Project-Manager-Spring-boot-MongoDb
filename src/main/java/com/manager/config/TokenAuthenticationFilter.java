@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
 
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-    private static final String[] publicApis = {"/", "/api/auth/register", "/api/auth/login"};
+    private static final String[] publicApis = {"/", "/api/auth/register", "/api/auth/login", "/api/auth/test"};
 
     private static final LinkedHashSet<String> publicApisList = new LinkedHashSet<>(
             Arrays.asList(publicApis)
