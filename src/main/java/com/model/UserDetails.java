@@ -1,47 +1,23 @@
 package com.model;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "user_details")
 public class UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
-    private User user;
-    @Column(name = "name", nullable = false)
+    @NotBlank
     private String name;
-    @Column(name = "secondary_email", nullable = true)
     private String secondaryEmail;
-    @Column(name = "linkedin_profile", nullable = true)
     private String linkedInProfile;
-    @Column(name = "portfolio_link", nullable = true)
     private String portfolioLink;
+    private String githubLink;
 
-    public Long getId() {
-        return id;
-    }
+    public UserDetails(){}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPortfolioLink() {
-        return portfolioLink;
-    }
-
-    public void setPortfolioLink(String portfolioLink) {
+    public UserDetails(String name, String secondaryEmail, String linkedInProfile, String portfolioLink, String githubLink){
+        this.githubLink = githubLink;
+        this.name = name;
+        this.linkedInProfile = linkedInProfile;
         this.portfolioLink = portfolioLink;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        this.secondaryEmail = secondaryEmail;
     }
 
     public String getName() {
@@ -66,5 +42,21 @@ public class UserDetails {
 
     public void setLinkedInProfile(String linkedInProfile) {
         this.linkedInProfile = linkedInProfile;
+    }
+
+    public String getPortfolioLink() {
+        return portfolioLink;
+    }
+
+    public void setPortfolioLink(String portfolioLink) {
+        this.portfolioLink = portfolioLink;
+    }
+
+    public String getGithubLink() {
+        return githubLink;
+    }
+
+    public void setGithubLink(String githubLink) {
+        this.githubLink = githubLink;
     }
 }

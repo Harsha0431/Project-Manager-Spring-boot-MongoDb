@@ -57,8 +57,7 @@ public class TokenService {
         return null;
     }
 
-    public User getUserObjectFromHeaderToken(HttpServletRequest request, UserService userService){
-        String email = getUserEmailFromToken(getTokenFromRequest(request));
-        return userService.getUserObjectFromEmail(email);
+    public String getUserEmailFromHeader(HttpServletRequest request){
+        return getUserEmailFromToken(getTokenFromRequest(request));
     }
 }

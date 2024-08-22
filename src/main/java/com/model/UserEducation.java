@@ -1,37 +1,68 @@
 package com.model;
 
-import jakarta.persistence.*;
+import com.Helpers.EducationType;
+import org.springframework.data.mongodb.core.index.Indexed;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "education_type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "education", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_education",
-                columnNames = {"email", "education_type", "course"})
-})
+import java.time.LocalDate;
+
+
 public class UserEducation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Indexed
+    private EducationType educationType;
+    @Indexed
+    private String institutionName;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    @Indexed
+    private String course;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "email", referencedColumnName = "email")
-    private User user;
+    public UserEducation(){}
 
-    public User getUser() {
-        return user;
+    public UserEducation(EducationType educationType, String institutionName, LocalDate startDate, LocalDate endDate, String course){
+        setEducationType(educationType);
+        setCourse(course);
+        setInstitutionName(institutionName);
+        setStartDate(startDate);
+        setEndDate(endDate);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public EducationType getEducationType() {
+        return educationType;
     }
 
-    public Long getId() {
-        return id;
+    public void setEducationType(EducationType educationType) {
+        this.educationType = educationType;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getInstitutionName() {
+        return institutionName;
+    }
+
+    public void setInstitutionName(String institutionName) {
+        this.institutionName = institutionName;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
     }
 }

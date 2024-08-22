@@ -1,8 +1,7 @@
 package com.controller;
 
 import com.ApiResponse.ApiResponse;
-import com.model.MongoDb.User;
-import com.model.UserEducation;
+import com.model.User;
 import com.service.MongoDb.UserMongoDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,6 @@ public class Controller {
     @Autowired
     private UserMongoDbService userMongoDbService;
 
-    @PostMapping(path = "/test")
-    public ApiResponse<UserEducation> getHome(){
-        return new ApiResponse<>(-1, null, null);
-    }
 
     @PostMapping("/api/auth/test")
     public ResponseEntity<ApiResponse<User>> enrollUser(@RequestBody User user){

@@ -1,15 +1,15 @@
 package com.service.MongoDb;
 
 import com.ApiResponse.ApiResponse;
-import com.model.MongoDb.User;
-import com.repository.MongoDb.UserMongoRepository;
+import com.model.User;
+import com.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserMongoDbService {
     @Autowired
-    private UserMongoRepository userMongoRepository;
+    private UserRepository userMongoRepository;
 
     public ApiResponse<User> saveUser(User user){
         ApiResponse<User> response;

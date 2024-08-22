@@ -88,10 +88,10 @@ public class Bean2 {
 
 2. **Repository**
 <br>Here we perform CRUD operations on User model
+
 ```java UserRepository
 package com.repository;
 
-import com.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -150,12 +150,11 @@ public class UserService {
 }
 ```
 4. **Controller**
+
 ```java
 package com.controller;
 
 import com.ApiResponse.ApiResponse;
-import com.model.User;
-import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
