@@ -122,17 +122,14 @@ public class EducationController {
     // Delete
     @DeleteMapping("")
     public ResponseEntity<ApiResponse<List<UserEducation>>> deleteUserEducation(
-            @RequestBody String educationType,
-            @RequestBody String institutionName,
-            @RequestBody String startDate,
-            @RequestBody String endDate,
-            @RequestBody String course,
+            @RequestBody UserEducationBody userEducationBody,
             HttpServletResponse response, HttpServletRequest request){
         try{
             String email = tokenService.getUserEmailFromHeader(request);
 
-            UserEducation education = new UserEducation(EducationType.fromString(educationType),
-                    institutionName, DateUtils.parseDate(startDate), DateUtils.parseDate(endDate), course);
+            UserEducation education = new UserEducation(EducationType.fromString(userEducationBody.getEducationType()),
+                    userEducationBody.getInstitutionName(), DateUtils.parseDate(userEducationBody.getStartDate()),
+                    DateUtils.parseDate(userEducationBody.getEndDate()), userEducationBody.getCourse());
 
             ApiResponse<List<UserEducation>> res = userService.deleteUserEducation(email, education);
             int status = res.getCode() == 1 ? 200 : 400;

@@ -127,12 +127,20 @@ public class UserService {
                     List<UserEducation> educationList = user.getEducationList();
                     boolean isDuplicate = false;
                     for(UserEducation userEducation: educationList){
-                        if( userEducation.getInstitutionName() == education.getInstitutionName() &&
-                                userEducation.getEducationType().equals(education.getEducationType()) &&
-                                userEducation.getCourse() == education.getCourse()
+                        if( userEducation.getInstitutionName().equalsIgnoreCase(education.getInstitutionName()) &&
+                                userEducation.getEducationType().equals(education.getEducationType())
                         ){
-                            isDuplicate = true;
-                            break;
+                            if(userEducation.getCourse() == null && education.getCourse() == null) {
+                                isDuplicate = true;
+                                break;
+                            }
+                            else if(userEducation.getCourse()!=null && education.getCourse()!=null &&
+                                    userEducation.getCourse().equalsIgnoreCase(education.getCourse())
+                            ){
+                                isDuplicate = true;
+                                break;
+                            }
+
                         }
                     }
 
@@ -217,7 +225,7 @@ public class UserService {
                         (education ->
                                 education.getEducationType() == deleteEducation.getEducationType()
                                 && education.getInstitutionName().equalsIgnoreCase(deleteEducation.getInstitutionName())
-                                && education.getCourse().equalsIgnoreCase(deleteEducation.getCourse())
+                                && (education.getCourse()==deleteEducation.getCourse() || education.getCourse().equalsIgnoreCase(deleteEducation.getCourse()))
                         )
                 );
                 user.setEducationList(educationList);
