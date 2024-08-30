@@ -1,11 +1,12 @@
 package com.model;
 
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Document(collection = "user")
 @CompoundIndexes({
-    @CompoundIndex(name = "education_unique_index", def = "{'educationList.educationType': 1, 'educationList.institutionName': 1, 'educationList.course': 1}", unique = true)
+    @CompoundIndex(name = "education_unique_index", def = "{'username': 1, 'educationList.educationType': 1, 'educationList.institutionName': 1, 'educationList.course': 1}", unique = true)
 })
 public class User {
     @Id
@@ -30,10 +31,12 @@ public class User {
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     private String email;
+    @Transient
     @Pattern(
         regexp = "^(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+]{6,}$",
         message = "Password must be at least 6 characters long, contain at least one number, and include only letters, numbers, and special characters (!@#$%^&*()_+)."
     )
+    private String rawPassword;
     private String password;
 
     private List<UserEducation> educationList;
@@ -77,6 +80,15 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRawPassword() {
+        return rawPassword;
+    }
+
+    public void setRawPassword(String rawPassword) {
+        this.rawPassword = rawPassword;
+        setPassword(rawPassword);
     }
 
     public String getPassword() {

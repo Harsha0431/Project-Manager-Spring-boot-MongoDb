@@ -1,7 +1,5 @@
 package com.manager.config;
 
-import com.model.User;
-import com.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;

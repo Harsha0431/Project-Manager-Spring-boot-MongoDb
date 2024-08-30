@@ -5,7 +5,6 @@ import com.manager.config.TokenService;
 import com.model.User;
 import com.model.UserDetails;
 import com.model.UserEducation;
-import com.mongodb.DuplicateKeyException;
 import com.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +25,12 @@ public class UserService {
             User savedObject = userRepository.insert(user);
             return new ApiResponse<>(1, "User created successfully", savedObject);
         }
-        catch (DuplicateKeyException e){
-            System.out.println("Caught duplicate key exception in com.service.UserServiceMongo.addUser() due to: " + e.getMessage());
-            return new ApiResponse<>(0, "Username already exists", null);
-        }
         catch(Exception e){
-            System.out.println("Caught exception in com.service.UserServiceMongo.addUser() due to: " + e.getMessage());
+            if(e.getMessage().contains("email dup key"))
+                return new ApiResponse<>(0, "The email address is already registered. Please use a different email.", null);
+            if(e.getMessage().contains("education_unique_index"))
+                return new ApiResponse<>(0, "Username already exists", null);
+            System.out.println("Caught exception in com.service.UserService.addUser() due to: " + e.getMessage());
             return new ApiResponse<>(-1, "Failed to register user", null);
         }
     }
