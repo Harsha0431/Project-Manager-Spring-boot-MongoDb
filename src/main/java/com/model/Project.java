@@ -6,31 +6,69 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Document(collection = "project")
+@CompoundIndexes({
+        @CompoundIndex(name = "project_user_unique", def = "{'userEmail': 1, 'title': 1}", unique = true),
+        @CompoundIndex(name = "project_user_media", def = "{'mediaUploads.mediaLink': 1, 'userEmail': 1, 'title': 1}")
+})
 public class Project {
     @Id
     private ObjectId id;
-    @NotBlank
-    @NotNull
-    private ObjectId userId;
-    @NotBlank
-    @NotNull
+    private String userEmail;
+    @NotBlank(message = "Title is required")
     private String title;
     private String description;
-    @NotBlank
-    @NotNull
     private VisibilityType visibilityType;
-    @NotBlank
-    @NotNull
+    @NotNull(message = "Visibility type is required")
+    @Transient
+    private String visibility;
     private ProjectStatus projectStatus;
+    @NotNull(message = "Status is required")
+    @Transient
+    private String status;
     private long likeCount;
+    private String previewLink;
 
     private List<MediaUploads> mediaUploads;
-    private List<ProjectTech> techList;
+    private List<String> techList;
+
+    public Project(){
+        this.projectStatus = ProjectStatus.INITIATION;
+        this.visibilityType = VisibilityType.PUBLIC;
+        this.status = "public";
+        this.visibility = "INITIATION";
+    }
+
+    public String getPreviewLink() {
+        return previewLink;
+    }
+
+    public void setPreviewLink(String previewLink) {
+        this.previewLink = previewLink;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public ObjectId getId() {
         return id;
@@ -40,12 +78,12 @@ public class Project {
         this.id = id;
     }
 
-    public ObjectId getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserId(ObjectId userId) {
-        this.userId = userId;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getTitle() {
@@ -96,11 +134,11 @@ public class Project {
         this.mediaUploads = mediaUploads;
     }
 
-    public List<ProjectTech> getTechList() {
+    public List<String> getTechList() {
         return techList;
     }
 
-    public void setTechList(List<ProjectTech> techList) {
+    public void setTechList(List<String> techList) {
         this.techList = techList;
     }
 }

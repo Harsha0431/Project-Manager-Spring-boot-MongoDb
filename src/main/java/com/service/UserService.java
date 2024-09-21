@@ -8,6 +8,7 @@ import com.model.UserEducation;
 import com.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,10 @@ public class UserService {
     @Autowired
     private TokenService tokenService;
 
-    public ApiResponse<User> addUser(User user){
+    public ApiResponse<String> addUser(User user){
         try{
             User savedObject = userRepository.insert(user);
-            return new ApiResponse<>(1, "User created successfully", savedObject);
+            return new ApiResponse<>(1, "User created successfully", null);
         }
         catch(Exception e){
             if(e.getMessage().contains("email dup key"))
@@ -35,42 +36,44 @@ public class UserService {
         }
     }
 
-    public ApiResponse<Map<String, String>> verifyUserCredentials(String email, String password){
+    public ResponseEntity<ApiResponse<Map<String, String>>> verifyUserCredentials(String email, String password){
         try{
             User user = userRepository.findByEmail(email).orElse(null);
             if(user == null){
-                return new ApiResponse<>(0, "User with email " + email.strip() + " not found.", null);
+                return ResponseEntity.status(404).body(
+                        new ApiResponse<>(0, "User with email " + email.strip() + " not found.", null)
+                );
             }
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             if(!encoder.matches(password, user.getPassword())){
-                return new ApiResponse<>(0, "Invalid password", null);
+                return ResponseEntity.badRequest().body(new ApiResponse<>(0, "Invalid password", null));
             }
             String token = tokenService.generateJwtToken(user.getEmail());
             Map<String, String> data = new HashMap<>();
             data.put("token", token);
-            return new ApiResponse<>(1, "Login successful", data);
+            return ResponseEntity.ok().body(new ApiResponse<>(1, "Login successful", data));
         }
         catch (Exception e){
             System.out.println("Caught exception in com.service.UserServiceMongo.verifyUserCredentials() service: " + e.getMessage());
-            return new ApiResponse<>(-1, "Failed to verify user credentials", null);
+            return ResponseEntity.internalServerError().body(new ApiResponse<>(-1, "Failed to verify user credentials", null));
         }
     }
 
-    public ApiResponse<String> verifyUserToken(HttpServletRequest request){
+    public ResponseEntity<ApiResponse<String>> verifyUserToken(HttpServletRequest request){
         try{
             String token = tokenService.getTokenFromRequest(request);
             if(token!=null && !token.isEmpty()){
                 boolean isTokenValid = tokenService.isTokenValid(token);
                 if(isTokenValid) {
                     String payloadEmail = tokenService.getUserEmailFromToken(token);
-                    return new ApiResponse<>(1, "Login successful.", payloadEmail);
+                    return ResponseEntity.ok().body(new ApiResponse<>(1, "Login successful.", payloadEmail));
                 }
             }
-            return new ApiResponse<>(0, "Invalid token or no token provided. Please login to continue", null);
+            return ResponseEntity.badRequest().body(new ApiResponse<>(-2, "Invalid token or no token provided. Please login to continue", null));
         }
         catch (Exception e){
             System.out.println("Caught exception in com.service.UserServiceMongo.verifyUserToken() in UserService due to ~ " + e.getMessage());
-            return new ApiResponse<>(-1, "Failed to verify user token", null);
+            return ResponseEntity.internalServerError().body(new ApiResponse<>(-2, "Failed to verify user token", null));
         }
     }
 
@@ -144,7 +147,7 @@ public class UserService {
                     }
 
                     if (isDuplicate) {
-                        throw new IllegalArgumentException("Duplicate education entry not allowed.");
+                        throw new RuntimeException("Duplicate education entry not allowed.");
                     }
                 }
                 if(user.getEducationList() == null){

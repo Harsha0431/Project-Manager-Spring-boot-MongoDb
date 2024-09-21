@@ -3,9 +3,9 @@ package com.Helpers;
 public enum ProjectStatus {
     INITIATION,  // Define the project's goals, scope, budget, and timeline
     PLANNING,  // Create a comprehensive project plan
-    EXECUTION,  // Put the plan into action and keep the team on track
+    UNDER_DEVELOPMENT,  // Put the plan into action and keep the team on track
     MONITORING_AND_CONTROLLING,
-    CLOSURE;  // The final phase of the project
+    COMPLETED;  // The final phase of the project
 
     public static ProjectStatus fromString(String status){
         try{

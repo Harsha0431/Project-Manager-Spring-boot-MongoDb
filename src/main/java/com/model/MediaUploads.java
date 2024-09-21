@@ -6,35 +6,34 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class MediaUploads {
-    @NotNull
-    private String title;
-    @NotNull
-    private String mediaLink;
     @NotBlank
+    private String title;
+    @NotBlank
+    private String mediaLink;
     @NotNull
     private MediaType mediaType;
 
-    public @NotNull String getTitle() {
+    public @NotBlank String getTitle() {
         return title;
     }
 
-    public void setTitle(@NotNull String title) {
+    public void setTitle(@NotBlank String title) {
         this.title = title;
     }
 
-    public @NotNull String getMediaLink() {
+    public @NotBlank String getMediaLink() {
         return mediaLink;
     }
 
-    public void setMediaLink(@NotNull String mediaLink) {
+    public void setMediaLink(@NotBlank String mediaLink) {
         this.mediaLink = mediaLink;
     }
 
-    public @NotBlank @NotNull MediaType getMediaType() {
+    public @NotNull MediaType getMediaType() {
         return mediaType;
     }
 
-    public void setMediaType(@NotBlank @NotNull MediaType mediaType) {
+    public void setMediaType(@NotNull MediaType mediaType) {
         this.mediaType = mediaType;
     }
 }

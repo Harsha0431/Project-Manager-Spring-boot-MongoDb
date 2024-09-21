@@ -19,17 +19,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<User>> addUser(@RequestBody @Valid User user, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse<String>> addUser(@RequestBody @Valid User user, BindingResult bindingResult) {
         try{
             if(bindingResult.hasErrors()){
                 throw new RuntimeException(bindingResult.toString());
             }
-            ApiResponse<User> apiResponse = userService.addUser(user);
-            int status = apiResponse.getCode() == 1 ? 200: 500;
+            ApiResponse<String> apiResponse = userService.addUser(user);
+            int status = apiResponse.getCode() == 1 ? 200: 400;
             return ResponseEntity.status(status).body(apiResponse);
         }
         catch (RuntimeException e){
-            ApiResponse<User> apiResponse = new ApiResponse<>();
+            ApiResponse<String> apiResponse = new ApiResponse<>();
             apiResponse.setCode(-1);
             apiResponse.setMessage(e.getMessage());
             if(bindingResult.hasErrors()){
@@ -70,14 +70,12 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Map<String, String>>> verifyUserCredentials(@RequestBody UserCredentials credentials){
-        return ResponseEntity.accepted().body(
-                userService.verifyUserCredentials(credentials.getEmail(), credentials.getPassword())
-        );
+        return userService.verifyUserCredentials(credentials.getEmail(), credentials.getPassword());
     }
 
     @GetMapping("/verify")
     public ResponseEntity<ApiResponse<String>> verifyUserToken(HttpServletRequest request){
-        return ResponseEntity.status(200).body(userService.verifyUserToken(request));
+        return userService.verifyUserToken(request);
     }
 
 }
