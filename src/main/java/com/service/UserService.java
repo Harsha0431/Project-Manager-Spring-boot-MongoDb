@@ -38,6 +38,14 @@ public class UserService {
 
     public ResponseEntity<ApiResponse<Map<String, String>>> verifyUserCredentials(String email, String password){
         try{
+            if(email == null)
+                return ResponseEntity.badRequest().body(
+                        new ApiResponse<>(0, "Please enter valid email.", null)
+                );
+            if(password == null)
+                return ResponseEntity.badRequest().body(
+                        new ApiResponse<>(0, "Please enter valid password.", null)
+                );
             User user = userRepository.findByEmail(email).orElse(null);
             if(user == null){
                 return ResponseEntity.status(404).body(
@@ -48,31 +56,33 @@ public class UserService {
             if(!encoder.matches(password, user.getPassword())){
                 return ResponseEntity.badRequest().body(new ApiResponse<>(0, "Invalid password", null));
             }
-            String token = tokenService.generateJwtToken(user.getEmail());
+            String token = tokenService.generateJwtToken(user.getEmail(), user.getUsername());
             Map<String, String> data = new HashMap<>();
             data.put("token", token);
+            data.put("username", user.getUsername());
+            data.put("email", user.getEmail());
             return ResponseEntity.ok().body(new ApiResponse<>(1, "Login successful", data));
         }
         catch (Exception e){
-            System.out.println("Caught exception in com.service.UserServiceMongo.verifyUserCredentials() service: " + e.getMessage());
+            System.out.println("Caught exception in com.service.UserService.verifyUserCredentials() service: " + e.getMessage());
             return ResponseEntity.internalServerError().body(new ApiResponse<>(-1, "Failed to verify user credentials", null));
         }
     }
 
-    public ResponseEntity<ApiResponse<String>> verifyUserToken(HttpServletRequest request){
+    public ResponseEntity<ApiResponse<Map<String, String>>> verifyUserToken(HttpServletRequest request){
         try{
             String token = tokenService.getTokenFromRequest(request);
             if(token!=null && !token.isEmpty()){
                 boolean isTokenValid = tokenService.isTokenValid(token);
                 if(isTokenValid) {
-                    String payloadEmail = tokenService.getUserEmailFromToken(token);
-                    return ResponseEntity.ok().body(new ApiResponse<>(1, "Login successful.", payloadEmail));
+                    Map<String, String> payload = tokenService.getPayloadFromToken(token);
+                    return ResponseEntity.ok().body(new ApiResponse<>(1, "Login successful.", payload));
                 }
             }
             return ResponseEntity.badRequest().body(new ApiResponse<>(-2, "Invalid token or no token provided. Please login to continue", null));
         }
         catch (Exception e){
-            System.out.println("Caught exception in com.service.UserServiceMongo.verifyUserToken() in UserService due to ~ " + e.getMessage());
+            System.out.println("Caught exception in com.service.UserService.verifyUserToken() in UserService due to ~ " + e.getMessage());
             return ResponseEntity.internalServerError().body(new ApiResponse<>(-2, "Failed to verify user token", null));
         }
     }

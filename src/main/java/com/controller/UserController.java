@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<ApiResponse<String>> verifyUserToken(HttpServletRequest request){
+    public ResponseEntity<ApiResponse<Map<String, String>>> verifyUserToken(HttpServletRequest request){
         return userService.verifyUserToken(request);
     }
 

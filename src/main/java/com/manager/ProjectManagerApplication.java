@@ -22,20 +22,4 @@ public class ProjectManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProjectManagerApplication.class, args);
 	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry){
-				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:5173")
-						.allowedHeaders("*", "Authorization", "Content-Type")
-						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-						.allowCredentials(true)
-						.exposedHeaders("Authorization")
-						.maxAge(3600);
-			}
-		};
-	}
 }
