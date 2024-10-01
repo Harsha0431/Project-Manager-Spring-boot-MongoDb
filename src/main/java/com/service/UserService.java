@@ -157,7 +157,7 @@ public class UserService {
                     }
 
                     if (isDuplicate) {
-                        throw new RuntimeException("Duplicate education entry not allowed.");
+                        throw new RuntimeException("Education details with given course, institution and type already exists.");
                     }
                 }
                 if(user.getEducationList() == null){

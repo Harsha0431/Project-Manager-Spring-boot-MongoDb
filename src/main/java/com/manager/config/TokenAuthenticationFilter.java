@@ -49,7 +49,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            ApiResponse<String> res = new ApiResponse<String>(-1, "Please login to continue.", null);
+            ApiResponse<String> res = new ApiResponse<String>(-2, "Please login to continue.", null);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(ow.writeValueAsString(res));
         }
