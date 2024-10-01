@@ -7,12 +7,15 @@ import com.manager.config.TokenService;
 import com.model.Project;
 import com.service.ProjectService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -91,6 +94,20 @@ public class ProjectController {
         catch (Exception e){
             System.out.println("Caught exception in com.controller.ProjectController.updateProject() due to " + e.getMessage());
             return ResponseEntity.internalServerError().body(new ApiResponse<>(-1, "Failed to update project", null));
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<List<Project>>> getProjectsList(HttpServletRequest request, HttpServletResponse response){
+        try{
+            String email = tokenService.getUserEmailFromHeader(request);
+            ApiResponse<List<Project>> apiResponse = projectService.getProjectList(email);
+            int status = apiResponse.getCode() == 1 ? 200 : 400;
+            return ResponseEntity.status(status).body(apiResponse);
+        }
+        catch (Exception e){
+            System.out.println("Caught exception in com.controller.ProjectController.getProjectsList() due to " + e.getMessage());
+            return ResponseEntity.internalServerError().body(new ApiResponse<>(-1, "Failed to get user projects.", null));
         }
     }
 }

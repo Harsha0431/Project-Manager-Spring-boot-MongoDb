@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class ProjectService {
             apiResponse.setMessage("Project Saved");
         }
         catch (Exception e){
-            System.out.println("Caught exception in com.service.ProjectService.saveUser() due to " + e.getMessage());
+            System.out.println("Caught exception in com.service.ProjectService.saveProject() due to " + e.getMessage());
             if(e.getMessage().contains("project_user_unique dup key"))
                 apiResponse.setMessage("A project with this title already exists in your list.");
             else
@@ -55,5 +56,21 @@ public class ProjectService {
             apiResponse.setCode(-1);
         }
         return apiResponse;
+    }
+
+    public ApiResponse<List<Project>> getProjectList(String email){
+        ApiResponse<List<Project>> response = new ApiResponse<>();
+        try{
+            List<Project> projects = projectRepository.findByUserEmail(email);
+            response.setData(projects);
+            response.setCode(1);
+            response.setMessage("Fetched all the projects.");
+        }
+        catch(Exception e){
+            System.out.println("Caught exception in com.service.ProjectService.getProjectList() due to " + e.getMessage());
+            response.setCode(-1);
+            response.setMessage("Unexpected error occurred while getting projects list.");
+        }
+        return response;
     }
 }

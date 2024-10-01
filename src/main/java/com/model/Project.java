@@ -35,6 +35,7 @@ public class Project {
     private String status;
     private long likeCount;
     private String previewLink;
+    private String githubLink;
 
     private List<MediaUploads> mediaUploads;
     private List<String> techList;
@@ -42,10 +43,17 @@ public class Project {
     public Project(){
         this.projectStatus = ProjectStatus.INITIATION;
         this.visibilityType = VisibilityType.PUBLIC;
-        this.status = "public";
-        this.visibility = "INITIATION";
+        this.status = "INITIATION";
+        this.visibility = "public";
     }
 
+    public String getGithubLink() {
+        return githubLink;
+    }
+
+    public void setGithubLink(String githubLink) {
+        this.githubLink = githubLink;
+    }
     public String getPreviewLink() {
         return previewLink;
     }
